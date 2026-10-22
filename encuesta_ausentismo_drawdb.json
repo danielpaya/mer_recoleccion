@@ -1,19 +1,19 @@
 {
   "title": "Encuesta ausentismo - Por que capamos clase",
-  "database": "mysql",
+  "database": "mariadb",
   "tables": [
     {
       "id": 0,
       "name": "facultad",
-      "x": 40,
-      "y": 60,
-      "comment": "Catalogo de las 12 facultades (P3)",
-      "indices": [],
+      "x": 0,
+      "y": 0,
+      "comment": "Facultades de la universidad. Una facultad ofrece varios programas.",
       "color": "#175e7a",
+      "indices": [],
       "fields": [
         {
+          "id": 0,
           "name": "id",
-          "type": "INT",
           "default": "",
           "check": "",
           "primary": true,
@@ -21,58 +21,35 @@
           "notNull": true,
           "increment": true,
           "comment": "",
-          "id": 0
+          "type": "INT"
         },
         {
+          "id": 1,
           "name": "nombre",
-          "type": "VARCHAR",
           "default": "",
           "check": "",
           "primary": false,
           "unique": true,
           "notNull": true,
           "increment": false,
-          "comment": "Nombre oficial",
-          "size": 120,
-          "id": 1
-        },
-        {
-          "name": "nombre_corto",
+          "comment": "",
           "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": true,
-          "notNull": true,
-          "increment": false,
-          "comment": "Etiqueta del codebook",
-          "size": 40,
-          "id": 2
+          "size": "120"
         }
       ]
     },
     {
       "id": 1,
       "name": "programa",
-      "x": 40,
-      "y": 300,
-      "comment": "Programas por facultad (P4 y P5). La facultad de la respuesta se deriva de aqui",
-      "indices": [
-        {
-          "id": 0,
-          "name": "uq_programa_facultad_nombre",
-          "unique": true,
-          "fields": [
-            "facultad_id",
-            "nombre"
-          ]
-        }
-      ],
+      "x": 330,
+      "y": 0,
+      "comment": "Carrera o programa académico, adscrito a una facultad.",
       "color": "#175e7a",
+      "indices": [],
       "fields": [
         {
+          "id": 0,
           "name": "id",
-          "type": "INT",
           "default": "",
           "check": "",
           "primary": true,
@@ -80,11 +57,11 @@
           "notNull": true,
           "increment": true,
           "comment": "",
-          "id": 0
+          "type": "INT"
         },
         {
+          "id": 1,
           "name": "facultad_id",
-          "type": "INT",
           "default": "",
           "check": "",
           "primary": false,
@@ -92,11 +69,11 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 1
+          "type": "INT"
         },
         {
+          "id": 2,
           "name": "nombre",
-          "type": "VARCHAR",
           "default": "",
           "check": "",
           "primary": false,
@@ -104,268 +81,100 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "size": 150,
-          "id": 2
+          "type": "VARCHAR",
+          "size": "150"
         },
         {
+          "id": 3,
           "name": "nivel",
-          "type": "VARCHAR",
           "default": "Pregrado",
-          "check": "nivel IN ('Pregrado','Especializacion')",
+          "check": "",
           "primary": false,
           "unique": false,
           "notNull": true,
           "increment": false,
           "comment": "",
-          "size": 20,
-          "id": 3
+          "type": "ENUM",
+          "values": [
+            "Pregrado",
+            "Especializacion"
+          ]
         }
       ]
     },
     {
       "id": 2,
-      "name": "frecuencia",
-      "x": 380,
-      "y": 620,
-      "comment": "P7 - Frecuencia de ausentismo (ordinal)",
-      "indices": [],
-      "color": "#7d9dff",
+      "name": "matricula",
+      "x": 330,
+      "y": 230,
+      "comment": "Programas que cursa el estudiante. Uno es el programa base y, si hace doble programa, hay una segunda fila de tipo «doble».",
+      "color": "#89e667",
+      "indices": [
+        {
+          "id": 0,
+          "name": "uq_matricula_estudiante_tipo",
+          "unique": true,
+          "fields": [
+            "estudiante_id",
+            "tipo"
+          ]
+        }
+      ],
       "fields": [
         {
-          "name": "id",
-          "type": "INT",
+          "id": 0,
+          "name": "estudiante_id",
           "default": "",
-          "check": "id BETWEEN 1 AND 4",
+          "check": "",
           "primary": true,
           "unique": false,
           "notNull": true,
           "increment": false,
-          "comment": "En frecuencia es el codigo ordinal 1-4",
-          "id": 0
+          "comment": "",
+          "type": "INT"
         },
         {
-          "name": "descripcion",
-          "type": "VARCHAR",
+          "id": 1,
+          "name": "programa_id",
           "default": "",
           "check": "",
-          "primary": false,
-          "unique": true,
+          "primary": true,
+          "unique": false,
           "notNull": true,
           "increment": false,
-          "comment": "Texto completo de la opcion",
-          "size": 200,
-          "id": 1
+          "comment": "",
+          "type": "INT"
         },
         {
-          "name": "etiqueta",
-          "type": "VARCHAR",
+          "id": 2,
+          "name": "tipo",
           "default": "",
           "check": "",
           "primary": false,
           "unique": false,
           "notNull": true,
           "increment": false,
-          "comment": "Etiqueta corta del codebook",
-          "size": 60,
-          "id": 2
+          "comment": "Un solo programa base por estudiante",
+          "type": "ENUM",
+          "values": [
+            "base",
+            "doble"
+          ]
         }
       ]
     },
     {
       "id": 3,
-      "name": "horario",
-      "x": 640,
-      "y": 620,
-      "comment": "P9 - Horario en que mas falta",
+      "name": "estudiante",
+      "x": 690,
+      "y": 190,
+      "comment": "Estudiante que respondió la encuesta, de forma anónima.",
+      "color": "#175e7a",
       "indices": [],
-      "color": "#7d9dff",
       "fields": [
         {
+          "id": 0,
           "name": "id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 0
-        },
-        {
-          "name": "descripcion",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": true,
-          "notNull": true,
-          "increment": false,
-          "comment": "Texto completo de la opcion",
-          "size": 200,
-          "id": 1
-        },
-        {
-          "name": "etiqueta",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "Etiqueta corta del codebook",
-          "size": 60,
-          "id": 2
-        },
-        {
-          "name": "es_na",
-          "type": "BOOLEAN",
-          "default": "false",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "TRUE si es la opcion N/A",
-          "id": 3
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "name": "impacto_rendimiento",
-      "x": 900,
-      "y": 620,
-      "comment": "P12 - Impacto en el rendimiento",
-      "indices": [],
-      "color": "#7d9dff",
-      "fields": [
-        {
-          "name": "id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 0
-        },
-        {
-          "name": "descripcion",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": true,
-          "notNull": true,
-          "increment": false,
-          "comment": "Texto completo de la opcion",
-          "size": 200,
-          "id": 1
-        },
-        {
-          "name": "etiqueta",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "Etiqueta corta del codebook",
-          "size": 60,
-          "id": 2
-        },
-        {
-          "name": "es_na",
-          "type": "BOOLEAN",
-          "default": "false",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "TRUE si es la opcion N/A",
-          "id": 3
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "name": "impacto_psicologico",
-      "x": 1160,
-      "y": 620,
-      "comment": "P13 - Impacto psicologico",
-      "indices": [],
-      "color": "#7d9dff",
-      "fields": [
-        {
-          "name": "id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 0
-        },
-        {
-          "name": "descripcion",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": true,
-          "notNull": true,
-          "increment": false,
-          "comment": "Texto completo de la opcion",
-          "size": 200,
-          "id": 1
-        },
-        {
-          "name": "etiqueta",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "Etiqueta corta del codebook",
-          "size": 60,
-          "id": 2
-        },
-        {
-          "name": "es_na",
-          "type": "BOOLEAN",
-          "default": "false",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "TRUE si es la opcion N/A",
-          "id": 3
-        }
-      ]
-    },
-    {
-      "id": 6,
-      "name": "respuesta",
-      "x": 640,
-      "y": 60,
-      "comment": "Una fila por encuestado anonimo",
-      "indices": [],
-      "color": "#c43a3a",
-      "fields": [
-        {
-          "name": "id",
-          "type": "INT",
           "default": "",
           "check": "",
           "primary": true,
@@ -373,155 +182,291 @@
           "notNull": true,
           "increment": true,
           "comment": "",
-          "id": 0
+          "type": "INT"
         },
         {
-          "name": "fecha_registro",
-          "type": "DATETIME",
+          "id": 1,
+          "name": "fecha_encuesta",
           "default": "",
           "check": "",
           "primary": false,
           "unique": false,
           "notNull": true,
           "increment": false,
-          "comment": "Marca temporal de Forms",
-          "id": 1
+          "comment": "Marca temporal de Google Forms",
+          "type": "DATETIME"
         },
         {
+          "id": 2,
           "name": "acepta_consentimiento",
-          "type": "BOOLEAN",
           "default": "",
           "check": "acepta_consentimiento = TRUE",
           "primary": false,
           "unique": false,
           "notNull": true,
           "increment": false,
-          "comment": "P1",
-          "id": 2
+          "comment": "",
+          "type": "BOOLEAN"
         },
         {
+          "id": 3,
           "name": "semestre",
-          "type": "INT",
           "default": "",
           "check": "semestre BETWEEN 1 AND 10",
           "primary": false,
           "unique": false,
           "notNull": true,
           "increment": false,
-          "comment": "P2 (10 = 10 o mas)",
-          "id": 3
+          "comment": "",
+          "type": "TINYINT"
         },
         {
-          "name": "programa_base_id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "P3 + P4",
-          "id": 4
-        },
-        {
-          "name": "programa_doble_id",
-          "type": "INT",
-          "default": "",
-          "check": "programa_doble_id <> programa_base_id",
-          "primary": false,
-          "unique": false,
-          "notNull": false,
-          "increment": false,
-          "comment": "P5 - NULL si no hace doble programa",
-          "id": 5
-        },
-        {
+          "id": 4,
           "name": "promedio",
-          "type": "DECIMAL",
           "default": "",
-          "check": "promedio > 0 AND promedio <= 5",
+          "check": "promedio BETWEEN 0 AND 5",
           "primary": false,
           "unique": false,
           "notNull": false,
           "increment": false,
-          "comment": "P6 - opcional",
-          "size": "3,2",
-          "id": 6
+          "comment": "Opcional",
+          "type": "DECIMAL",
+          "size": "3,2"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "estudiante_factor",
+      "x": 330,
+      "y": 470,
+      "comment": "Factores que motivan al estudiante a asistir. Cada estudiante marca al menos uno.",
+      "color": "#89e667",
+      "indices": [],
+      "fields": [
+        {
+          "id": 0,
+          "name": "estudiante_id",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "type": "INT"
         },
         {
-          "name": "frecuencia_id",
-          "type": "INT",
+          "id": 1,
+          "name": "factor_id",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "type": "INT"
+        },
+        {
+          "id": 2,
+          "name": "detalle",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": false,
+          "increment": false,
+          "comment": "Texto si eligió «Otros»",
+          "type": "VARCHAR",
+          "size": "255"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "factor_asistencia",
+      "x": 0,
+      "y": 470,
+      "comment": "Condiciones que reducen las ganas de faltar a clase.",
+      "color": "#ff9159",
+      "indices": [],
+      "fields": [
+        {
+          "id": 0,
+          "name": "id",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "type": "INT"
+        },
+        {
+          "id": 1,
+          "name": "descripcion",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": true,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "type": "VARCHAR",
+          "size": "200"
+        },
+        {
+          "id": 2,
+          "name": "es_otro",
+          "default": "FALSE",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "type": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "inasistencia",
+      "x": 690,
+      "y": 470,
+      "comment": "Comportamiento de inasistencia voluntaria del estudiante: con qué frecuencia falta, cuándo y qué efecto le produce. Los campos de horario e impactos quedan en NULL si el estudiante no falta.",
+      "color": "#c43a3a",
+      "indices": [],
+      "fields": [
+        {
+          "id": 0,
+          "name": "id",
+          "default": "",
+          "check": "",
+          "primary": true,
+          "unique": false,
+          "notNull": true,
+          "increment": true,
+          "comment": "",
+          "type": "INT"
+        },
+        {
+          "id": 1,
+          "name": "estudiante_id",
+          "default": "",
+          "check": "",
+          "primary": false,
+          "unique": true,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "type": "INT"
+        },
+        {
+          "id": 2,
+          "name": "frecuencia",
           "default": "",
           "check": "",
           "primary": false,
           "unique": false,
           "notNull": true,
           "increment": false,
-          "comment": "P7",
-          "id": 7
+          "comment": "",
+          "type": "ENUM",
+          "values": [
+            "Nunca",
+            "Ocasional",
+            "Frecuente",
+            "Muy frecuente"
+          ]
         },
         {
-          "name": "horario_id",
-          "type": "INT",
+          "id": 3,
+          "name": "horario",
           "default": "",
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": true,
+          "notNull": false,
           "increment": false,
-          "comment": "P9",
-          "id": 8
+          "comment": "NULL si no aplica",
+          "type": "ENUM",
+          "values": [
+            "Mañana temprano",
+            "Mediodía",
+            "Tarde/noche",
+            "Viernes o puentes",
+            "Depende de la materia"
+          ]
         },
         {
-          "name": "impacto_rendimiento_id",
-          "type": "INT",
+          "id": 4,
+          "name": "impacto_rendimiento",
           "default": "",
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": true,
+          "notNull": false,
           "increment": false,
-          "comment": "P12",
-          "id": 9
+          "comment": "NULL si no aplica",
+          "type": "ENUM",
+          "values": [
+            "No afecta",
+            "Leve, compensa",
+            "Negativo",
+            "Depende de la materia"
+          ]
         },
         {
-          "name": "impacto_psicologico_id",
-          "type": "INT",
+          "id": 5,
+          "name": "impacto_psicologico",
           "default": "",
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": true,
+          "notNull": false,
           "increment": false,
-          "comment": "P13",
-          "id": 10
+          "comment": "NULL si no aplica",
+          "type": "ENUM",
+          "values": [
+            "Alivio",
+            "Culpa",
+            "Indiferencia",
+            "Satisfacción",
+            "Estrés",
+            "Desconexión",
+            "Temor a la familia",
+            "Incomodidad con el docente"
+          ]
         },
         {
-          "name": "material_virtual",
-          "type": "INT",
+          "id": 6,
+          "name": "efecto_material_virtual",
           "default": "",
-          "check": "material_virtual BETWEEN 1 AND 5",
+          "check": "efecto_material_virtual BETWEEN 1 AND 5",
           "primary": false,
           "unique": false,
           "notNull": true,
           "increment": false,
-          "comment": "P15 - Likert 1 Disminuye mucho ... 5 Aumenta mucho",
-          "id": 11
+          "comment": "1 disminuye mucho · 5 aumenta mucho",
+          "type": "TINYINT"
         }
       ]
     },
     {
       "id": 7,
-      "name": "motivo",
-      "x": 1320,
-      "y": 40,
-      "comment": "P8 - Motivo para no asistir",
+      "name": "inasistencia_motivo",
+      "x": 1080,
+      "y": 290,
+      "comment": "Motivos por los que el estudiante falta.",
+      "color": "#89e667",
       "indices": [],
-      "color": "#ff9159",
       "fields": [
         {
-          "name": "id",
-          "type": "INT",
+          "id": 0,
+          "name": "inasistencia_id",
           "default": "",
           "check": "",
           "primary": true,
@@ -529,72 +474,47 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 0
+          "type": "INT"
         },
         {
-          "name": "descripcion",
-          "type": "VARCHAR",
+          "id": 1,
+          "name": "motivo_id",
           "default": "",
           "check": "",
-          "primary": false,
-          "unique": true,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "size": 200,
-          "id": 1
-        },
-        {
-          "name": "etiqueta",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
+          "primary": true,
           "unique": false,
           "notNull": true,
           "increment": false,
           "comment": "",
-          "size": 60,
-          "id": 2
+          "type": "INT"
         },
         {
-          "name": "es_otro",
-          "type": "BOOLEAN",
-          "default": "false",
+          "id": 2,
+          "name": "detalle",
+          "default": "",
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": true,
+          "notNull": false,
           "increment": false,
-          "comment": "TRUE para la opcion Otros (habilita texto_otro)",
-          "id": 3
-        },
-        {
-          "name": "es_na",
-          "type": "BOOLEAN",
-          "default": "false",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "TRUE para N/A (excluyente)",
-          "id": 4
+          "comment": "Texto si eligió «Otros»",
+          "type": "VARCHAR",
+          "size": "255"
         }
       ]
     },
     {
       "id": 8,
-      "name": "respuesta_motivo",
-      "x": 1040,
-      "y": 40,
-      "comment": "Puente N:M respuesta-motivo",
+      "name": "motivo",
+      "x": 1400,
+      "y": 290,
+      "comment": "Razones para no asistir a clase.",
+      "color": "#ff9159",
       "indices": [],
-      "color": "#89e667",
       "fields": [
         {
-          "name": "respuesta_id",
-          "type": "INT",
+          "id": 0,
+          "name": "id",
           "default": "",
           "check": "",
           "primary": true,
@@ -602,47 +522,47 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 0
+          "type": "INT"
         },
         {
-          "name": "motivo_id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 1
-        },
-        {
-          "name": "texto_otro",
-          "type": "VARCHAR",
+          "id": 1,
+          "name": "descripcion",
           "default": "",
           "check": "",
           "primary": false,
-          "unique": false,
-          "notNull": false,
+          "unique": true,
+          "notNull": true,
           "increment": false,
-          "comment": "Solo si la opcion es Otros",
-          "size": 255,
-          "id": 2
+          "comment": "",
+          "type": "VARCHAR",
+          "size": "200"
+        },
+        {
+          "id": 2,
+          "name": "es_otro",
+          "default": "FALSE",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "type": "BOOLEAN"
         }
       ]
     },
     {
       "id": 9,
-      "name": "tipo_asignatura",
-      "x": 1880,
-      "y": 40,
-      "comment": "P10 - Tipo de asignatura en que mas falta",
+      "name": "inasistencia_asignatura",
+      "x": 1080,
+      "y": 490,
+      "comment": "Tipos de asignatura en los que el estudiante suele faltar.",
+      "color": "#89e667",
       "indices": [],
-      "color": "#ff9159",
       "fields": [
         {
-          "name": "id",
-          "type": "INT",
+          "id": 0,
+          "name": "inasistencia_id",
           "default": "",
           "check": "",
           "primary": true,
@@ -650,72 +570,47 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 0
+          "type": "INT"
         },
         {
-          "name": "descripcion",
-          "type": "VARCHAR",
+          "id": 1,
+          "name": "tipo_asignatura_id",
           "default": "",
           "check": "",
-          "primary": false,
-          "unique": true,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "size": 200,
-          "id": 1
-        },
-        {
-          "name": "etiqueta",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
+          "primary": true,
           "unique": false,
           "notNull": true,
           "increment": false,
           "comment": "",
-          "size": 60,
-          "id": 2
+          "type": "INT"
         },
         {
-          "name": "es_otro",
-          "type": "BOOLEAN",
-          "default": "false",
+          "id": 2,
+          "name": "detalle",
+          "default": "",
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": true,
+          "notNull": false,
           "increment": false,
-          "comment": "TRUE para la opcion Otros (habilita texto_otro)",
-          "id": 3
-        },
-        {
-          "name": "es_na",
-          "type": "BOOLEAN",
-          "default": "false",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "TRUE para N/A (excluyente)",
-          "id": 4
+          "comment": "Texto si eligió «Otros»",
+          "type": "VARCHAR",
+          "size": "255"
         }
       ]
     },
     {
       "id": 10,
-      "name": "respuesta_tipo_asignatura",
-      "x": 1600,
-      "y": 40,
-      "comment": "Puente N:M respuesta-tipo_asignatura",
+      "name": "tipo_asignatura",
+      "x": 1400,
+      "y": 490,
+      "comment": "Clases de asignatura según su modalidad o control.",
+      "color": "#ff9159",
       "indices": [],
-      "color": "#89e667",
       "fields": [
         {
-          "name": "respuesta_id",
-          "type": "INT",
+          "id": 0,
+          "name": "id",
           "default": "",
           "check": "",
           "primary": true,
@@ -723,47 +618,47 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 0
+          "type": "INT"
         },
         {
-          "name": "tipo_asignatura_id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 1
-        },
-        {
-          "name": "texto_otro",
-          "type": "VARCHAR",
+          "id": 1,
+          "name": "descripcion",
           "default": "",
           "check": "",
           "primary": false,
-          "unique": false,
-          "notNull": false,
+          "unique": true,
+          "notNull": true,
           "increment": false,
-          "comment": "Solo si la opcion es Otros",
-          "size": 255,
-          "id": 2
+          "comment": "",
+          "type": "VARCHAR",
+          "size": "200"
+        },
+        {
+          "id": 2,
+          "name": "es_otro",
+          "default": "FALSE",
+          "check": "",
+          "primary": false,
+          "unique": false,
+          "notNull": true,
+          "increment": false,
+          "comment": "",
+          "type": "BOOLEAN"
         }
       ]
     },
     {
       "id": 11,
-      "name": "actividad",
-      "x": 1320,
-      "y": 330,
-      "comment": "P11 - Actividad a la que dedica el tiempo",
+      "name": "inasistencia_actividad",
+      "x": 1080,
+      "y": 690,
+      "comment": "Actividades que realiza el estudiante en lugar de ir a clase.",
+      "color": "#89e667",
       "indices": [],
-      "color": "#ff9159",
       "fields": [
         {
-          "name": "id",
-          "type": "INT",
+          "id": 0,
+          "name": "inasistencia_id",
           "default": "",
           "check": "",
           "primary": true,
@@ -771,120 +666,47 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 0
+          "type": "INT"
         },
         {
-          "name": "descripcion",
-          "type": "VARCHAR",
+          "id": 1,
+          "name": "actividad_id",
           "default": "",
           "check": "",
-          "primary": false,
-          "unique": true,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "size": 200,
-          "id": 1
-        },
-        {
-          "name": "etiqueta",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
+          "primary": true,
           "unique": false,
           "notNull": true,
           "increment": false,
           "comment": "",
-          "size": 60,
-          "id": 2
+          "type": "INT"
         },
         {
-          "name": "es_otro",
-          "type": "BOOLEAN",
-          "default": "false",
+          "id": 2,
+          "name": "detalle",
+          "default": "",
           "check": "",
           "primary": false,
           "unique": false,
-          "notNull": true,
+          "notNull": false,
           "increment": false,
-          "comment": "TRUE para la opcion Otros (habilita texto_otro)",
-          "id": 3
-        },
-        {
-          "name": "es_na",
-          "type": "BOOLEAN",
-          "default": "false",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "TRUE para N/A (excluyente)",
-          "id": 4
+          "comment": "Texto si eligió «Otros»",
+          "type": "VARCHAR",
+          "size": "255"
         }
       ]
     },
     {
       "id": 12,
-      "name": "respuesta_actividad",
-      "x": 1040,
-      "y": 330,
-      "comment": "Puente N:M respuesta-actividad",
-      "indices": [],
-      "color": "#89e667",
-      "fields": [
-        {
-          "name": "respuesta_id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 0
-        },
-        {
-          "name": "actividad_id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 1
-        },
-        {
-          "name": "texto_otro",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": false,
-          "increment": false,
-          "comment": "Solo si la opcion es Otros",
-          "size": 255,
-          "id": 2
-        }
-      ]
-    },
-    {
-      "id": 13,
-      "name": "factor",
-      "x": 1880,
-      "y": 330,
-      "comment": "P14 - Factores que disminuyen el deseo de faltar",
-      "indices": [],
+      "name": "actividad",
+      "x": 1400,
+      "y": 690,
+      "comment": "Usos del tiempo cuando se falta a clase.",
       "color": "#ff9159",
+      "indices": [],
       "fields": [
         {
+          "id": 0,
           "name": "id",
-          "type": "INT",
           "default": "",
           "check": "",
           "primary": true,
@@ -892,11 +714,11 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "id": 0
+          "type": "INT"
         },
         {
+          "id": 1,
           "name": "descripcion",
-          "type": "VARCHAR",
           "default": "",
           "check": "",
           "primary": false,
@@ -904,81 +726,20 @@
           "notNull": true,
           "increment": false,
           "comment": "",
-          "size": 200,
-          "id": 1
-        },
-        {
-          "name": "etiqueta",
           "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "size": 60,
-          "id": 2
+          "size": "200"
         },
         {
+          "id": 2,
           "name": "es_otro",
-          "type": "BOOLEAN",
-          "default": "false",
+          "default": "FALSE",
           "check": "",
           "primary": false,
           "unique": false,
           "notNull": true,
           "increment": false,
-          "comment": "TRUE para la opcion Otros (habilita texto_otro)",
-          "id": 3
-        }
-      ]
-    },
-    {
-      "id": 14,
-      "name": "respuesta_factor",
-      "x": 1600,
-      "y": 330,
-      "comment": "Puente N:M respuesta-factor",
-      "indices": [],
-      "color": "#89e667",
-      "fields": [
-        {
-          "name": "respuesta_id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
           "comment": "",
-          "id": 0
-        },
-        {
-          "name": "factor_id",
-          "type": "INT",
-          "default": "",
-          "check": "",
-          "primary": true,
-          "unique": false,
-          "notNull": true,
-          "increment": false,
-          "comment": "",
-          "id": 1
-        },
-        {
-          "name": "texto_otro",
-          "type": "VARCHAR",
-          "default": "",
-          "check": "",
-          "primary": false,
-          "unique": false,
-          "notNull": false,
-          "increment": false,
-          "comment": "Solo si la opcion es Otros",
-          "size": 255,
-          "id": 2
+          "type": "BOOLEAN"
         }
       ]
     }
@@ -1003,116 +764,116 @@
     },
     {
       "id": 1,
-      "name": "fk_respuesta_programa_base_id_programa",
-      "startTableId": 6,
-      "startFieldId": 4,
+      "name": "fk_matricula_programa_id_programa",
+      "startTableId": 2,
+      "startFieldId": 1,
       "endTableId": 1,
       "endFieldId": 0,
       "fields": [
         {
-          "startFieldId": 4,
+          "startFieldId": 1,
           "endFieldId": 0
         }
       ],
       "cardinality": "many_to_one",
       "updateConstraint": "No action",
-      "deleteConstraint": "No action"
+      "deleteConstraint": "Cascade"
     },
     {
       "id": 2,
-      "name": "fk_respuesta_programa_doble_id_programa",
-      "startTableId": 6,
-      "startFieldId": 5,
-      "endTableId": 1,
-      "endFieldId": 0,
-      "fields": [
-        {
-          "startFieldId": 5,
-          "endFieldId": 0
-        }
-      ],
-      "cardinality": "many_to_one",
-      "updateConstraint": "No action",
-      "deleteConstraint": "Set null"
-    },
-    {
-      "id": 3,
-      "name": "fk_respuesta_frecuencia_id_frecuencia",
-      "startTableId": 6,
-      "startFieldId": 7,
-      "endTableId": 2,
-      "endFieldId": 0,
-      "fields": [
-        {
-          "startFieldId": 7,
-          "endFieldId": 0
-        }
-      ],
-      "cardinality": "many_to_one",
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action"
-    },
-    {
-      "id": 4,
-      "name": "fk_respuesta_horario_id_horario",
-      "startTableId": 6,
-      "startFieldId": 8,
+      "name": "fk_matricula_estudiante_id_estudiante",
+      "startTableId": 2,
+      "startFieldId": 0,
       "endTableId": 3,
       "endFieldId": 0,
       "fields": [
         {
-          "startFieldId": 8,
+          "startFieldId": 0,
           "endFieldId": 0
         }
       ],
       "cardinality": "many_to_one",
       "updateConstraint": "No action",
-      "deleteConstraint": "No action"
+      "deleteConstraint": "Cascade"
     },
     {
-      "id": 5,
-      "name": "fk_respuesta_impacto_rendimiento_id_impacto_rendimiento",
-      "startTableId": 6,
-      "startFieldId": 9,
-      "endTableId": 4,
+      "id": 3,
+      "name": "fk_estudiante_factor_estudiante_id_estudiante",
+      "startTableId": 4,
+      "startFieldId": 0,
+      "endTableId": 3,
       "endFieldId": 0,
       "fields": [
         {
-          "startFieldId": 9,
+          "startFieldId": 0,
           "endFieldId": 0
         }
       ],
       "cardinality": "many_to_one",
       "updateConstraint": "No action",
-      "deleteConstraint": "No action"
+      "deleteConstraint": "Cascade"
     },
     {
-      "id": 6,
-      "name": "fk_respuesta_impacto_psicologico_id_impacto_psicologico",
-      "startTableId": 6,
-      "startFieldId": 10,
+      "id": 4,
+      "name": "fk_estudiante_factor_factor_id_factor_asistencia",
+      "startTableId": 4,
+      "startFieldId": 1,
       "endTableId": 5,
       "endFieldId": 0,
       "fields": [
         {
-          "startFieldId": 10,
+          "startFieldId": 1,
           "endFieldId": 0
         }
       ],
       "cardinality": "many_to_one",
       "updateConstraint": "No action",
-      "deleteConstraint": "No action"
+      "deleteConstraint": "Cascade"
     },
     {
-      "id": 7,
-      "name": "fk_respuesta_motivo_respuesta_id_respuesta",
-      "startTableId": 8,
+      "id": 5,
+      "name": "fk_inasistencia_estudiante_id_estudiante",
+      "startTableId": 6,
+      "startFieldId": 1,
+      "endTableId": 3,
+      "endFieldId": 0,
+      "fields": [
+        {
+          "startFieldId": 1,
+          "endFieldId": 0
+        }
+      ],
+      "cardinality": "one_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": 6,
+      "name": "fk_inasistencia_motivo_inasistencia_id_inasistencia",
+      "startTableId": 7,
       "startFieldId": 0,
       "endTableId": 6,
       "endFieldId": 0,
       "fields": [
         {
           "startFieldId": 0,
+          "endFieldId": 0
+        }
+      ],
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": 7,
+      "name": "fk_inasistencia_motivo_motivo_id_motivo",
+      "startTableId": 7,
+      "startFieldId": 1,
+      "endTableId": 8,
+      "endFieldId": 0,
+      "fields": [
+        {
+          "startFieldId": 1,
           "endFieldId": 0
         }
       ],
@@ -1122,31 +883,31 @@
     },
     {
       "id": 8,
-      "name": "fk_respuesta_motivo_motivo_id_motivo",
-      "startTableId": 8,
-      "startFieldId": 1,
-      "endTableId": 7,
-      "endFieldId": 0,
-      "fields": [
-        {
-          "startFieldId": 1,
-          "endFieldId": 0
-        }
-      ],
-      "cardinality": "many_to_one",
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action"
-    },
-    {
-      "id": 9,
-      "name": "fk_respuesta_tipo_asignatura_respuesta_id_respuesta",
-      "startTableId": 10,
+      "name": "fk_inasistencia_asignatura_inasistencia_id_inasistencia",
+      "startTableId": 9,
       "startFieldId": 0,
       "endTableId": 6,
       "endFieldId": 0,
       "fields": [
         {
           "startFieldId": 0,
+          "endFieldId": 0
+        }
+      ],
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": 9,
+      "name": "fk_inasistencia_asignatura_tipo_asignatura_id_tipo_asignatura",
+      "startTableId": 9,
+      "startFieldId": 1,
+      "endTableId": 10,
+      "endFieldId": 0,
+      "fields": [
+        {
+          "startFieldId": 1,
           "endFieldId": 0
         }
       ],
@@ -1156,44 +917,27 @@
     },
     {
       "id": 10,
-      "name": "fk_respuesta_tipo_asignatura_tipo_asignatura_id_tipo_asignatura",
-      "startTableId": 10,
-      "startFieldId": 1,
-      "endTableId": 9,
+      "name": "fk_inasistencia_actividad_inasistencia_id_inasistencia",
+      "startTableId": 11,
+      "startFieldId": 0,
+      "endTableId": 6,
       "endFieldId": 0,
       "fields": [
         {
-          "startFieldId": 1,
+          "startFieldId": 0,
           "endFieldId": 0
         }
       ],
       "cardinality": "many_to_one",
       "updateConstraint": "No action",
-      "deleteConstraint": "No action"
+      "deleteConstraint": "Cascade"
     },
     {
       "id": 11,
-      "name": "fk_respuesta_actividad_respuesta_id_respuesta",
-      "startTableId": 12,
-      "startFieldId": 0,
-      "endTableId": 6,
-      "endFieldId": 0,
-      "fields": [
-        {
-          "startFieldId": 0,
-          "endFieldId": 0
-        }
-      ],
-      "cardinality": "many_to_one",
-      "updateConstraint": "No action",
-      "deleteConstraint": "Cascade"
-    },
-    {
-      "id": 12,
-      "name": "fk_respuesta_actividad_actividad_id_actividad",
-      "startTableId": 12,
+      "name": "fk_inasistencia_actividad_actividad_id_actividad",
+      "startTableId": 11,
       "startFieldId": 1,
-      "endTableId": 11,
+      "endTableId": 12,
       "endFieldId": 0,
       "fields": [
         {
@@ -1203,53 +947,19 @@
       ],
       "cardinality": "many_to_one",
       "updateConstraint": "No action",
-      "deleteConstraint": "No action"
-    },
-    {
-      "id": 13,
-      "name": "fk_respuesta_factor_respuesta_id_respuesta",
-      "startTableId": 14,
-      "startFieldId": 0,
-      "endTableId": 6,
-      "endFieldId": 0,
-      "fields": [
-        {
-          "startFieldId": 0,
-          "endFieldId": 0
-        }
-      ],
-      "cardinality": "many_to_one",
-      "updateConstraint": "No action",
       "deleteConstraint": "Cascade"
-    },
-    {
-      "id": 14,
-      "name": "fk_respuesta_factor_factor_id_factor",
-      "startTableId": 14,
-      "startFieldId": 1,
-      "endTableId": 13,
-      "endFieldId": 0,
-      "fields": [
-        {
-          "startFieldId": 1,
-          "endFieldId": 0
-        }
-      ],
-      "cardinality": "many_to_one",
-      "updateConstraint": "No action",
-      "deleteConstraint": "No action"
     }
   ],
   "notes": [
     {
       "id": 0,
-      "x": 40,
-      "y": 860,
-      "title": "Reglas de validacion fuera de CHECK",
-      "content": "1) N/A no puede combinarse con otras opciones en las tablas puente.\n2) texto_otro solo se llena cuando la opcion es Otros.\n3) Cada respuesta debe tener al menos 1 fila en respuesta_factor (P14 obligatoria).\n4) La facultad se obtiene via programa.facultad_id.",
+      "x": 0,
+      "y": 680,
+      "title": "Reglas de validacion",
+      "content": "1) Cada estudiante tiene exactamente una matrícula de tipo «base» y como máximo una de tipo «doble».\n2) Si la frecuencia es «Nunca», la inasistencia no tiene motivos, asignaturas ni actividades, y sus campos de horario e impactos quedan en NULL.\n3) El campo detalle solo se llena cuando la opción elegida es «Otros».\n4) Cada estudiante tiene al menos una fila en estudiante_factor.",
       "color": "#fcf7ac",
-      "height": 160,
-      "width": 420
+      "height": 180,
+      "width": 520
     }
   ],
   "subjectAreas": [],

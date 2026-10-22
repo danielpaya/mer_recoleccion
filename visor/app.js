@@ -42,6 +42,9 @@
     if (f.chk) out.push(`<span class="tag">CHECK ${esc(f.chk)}</span>`);
     return out.join("");
   };
+  const shortT = (t) => (t.startsWith("ENUM") ? "ENUM" : t);
+  const enumVals = (t) => (t.startsWith("ENUM") ? t.slice(5, -1).split("','").map((s) => s.replace(/'/g, "")) : null);
+  const enumNote = (f) => { const v = enumVals(f.t); return v ? `<div class="c">Valores: ${v.map(esc).join(" · ")}</div>` : ""; };
   const cardTxt = { one: "1", zone: "0..1", many: "1..N", zmany: "0..N" };
 
   /* ---------------- Diagrama ---------------- */
@@ -62,7 +65,7 @@
       const key = f.pk && f.fk ? "PK FK" : f.pk ? "PK" : f.fk ? "FK" : "";
       const cls = f.pk ? "pk" : f.fk ? "fk" : "";
       const li = el("li", { "data-f": f.n, class: f.nn && !f.pk ? "is-nn" : "", title: f.c || "" },
-        `<span class="k ${cls}">${key}</span><span class="fn">${esc(f.n)}</span><span class="ft">${esc(f.t)}</span>`);
+        `<span class="k ${cls}">${key}</span><span class="fn">${esc(f.n)}</span><span class="ft">${esc(shortT(f.t))}</span>`);
       ul.appendChild(li);
     });
     card.append(head, ul);
@@ -318,8 +321,8 @@
       ${qs.length ? `<p class="note">Preguntas que guarda: ${qs.map((q) => `<b>${q}</b>`).join(", ")}</p>` : ""}
       <h3>Columnas</h3>
       <table class="fields"><tbody>${t.fields.map((f) => `
-        <tr><td>${esc(f.n)}<div class="tags">${tagsFor(f)}${f.q ? `<span class="tag q">${f.q}</span>` : ""}</div>${f.c ? `<div class="c">${esc(f.c)}</div>` : ""}</td>
-        <td class="t">${esc(f.t)}</td></tr>`).join("")}</tbody></table>
+        <tr><td>${esc(f.n)}<div class="tags">${tagsFor(f)}${f.q ? `<span class="tag q">${f.q}</span>` : ""}</div>${enumNote(f)}${f.c ? `<div class="c">${esc(f.c)}</div>` : ""}</td>
+        <td class="t">${esc(shortT(f.t))}</td></tr>`).join("")}</tbody></table>
       <h3>Relaciones</h3>
       <ul class="rels">${rels}</ul>
       ${t.semillas ? `<h3>Valores del catálogo</h3><ol class="seeds">${t.semillas.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>${t.notaSemillas ? `<p class="note">${esc(t.notaSemillas)}</p>` : ""}` : ""}
@@ -416,7 +419,7 @@
       dhtml += `<article class="dcard"><header><h3>${esc(t.nombre)}</h3><button class="link-btn" data-diagram="${esc(t.nombre)}">Ver en el diagrama</button></header>
         <p>${esc(t.desc)}</p>
         <div class="table-wrap"><table class="dtable"><thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th></tr></thead><tbody>
-        ${t.fields.map((f) => `<tr><td class="mono">${esc(f.n)}</td><td class="mono">${esc(f.t)}</td><td><div class="tags">${tagsFor(f)}${f.q ? `<span class="tag q">${f.q}</span>` : ""}</div>${f.c ? `<div class="note">${esc(f.c)}</div>` : ""}</td></tr>`).join("")}
+        ${t.fields.map((f) => `<tr><td class="mono">${esc(f.n)}</td><td class="mono">${esc(shortT(f.t))}</td><td><div class="tags">${tagsFor(f)}${f.q ? `<span class="tag q">${f.q}</span>` : ""}</div>${enumNote(f)}${f.c ? `<div class="note">${esc(f.c)}</div>` : ""}</td></tr>`).join("")}
         </tbody></table></div>
         ${t.semillas ? `<details><summary>Valores del catálogo (${t.semillas.length})</summary><ol class="seeds">${t.semillas.map((s) => `<li>${esc(s)}</li>`).join("")}</ol></details>` : ""}
       </article>`;
@@ -456,7 +459,7 @@
       $("#tab-" + x).setAttribute("aria-selected", String(x === v));
     });
     try { history.replaceState(null, "", "#" + v); } catch (_) { /* sin historial */ }
-    if (v === "diagrama") requestAnimationFrame(() => { drawEdges(); if (!fitted) { if (viewport.clientWidth < 600) fit(["respuesta"], 0.7); else fit(); fitted = true; } });
+    if (v === "diagrama") requestAnimationFrame(() => { drawEdges(); if (!fitted) { if (viewport.clientWidth < 600) fit(["estudiante", "inasistencia"], 0.7); else fit(); fitted = true; } });
   }
   document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => showView(b.dataset.view)));
 
@@ -502,6 +505,9 @@
   });
 
   /* ---------------- Inicio ---------------- */
+  $("#st-tablas").textContent = M.tablas.length;
+  $("#st-rel").textContent = M.relaciones.length;
+  $("#st-preg").textContent = M.preguntas.length;
   placeCards();
   const start = () => {
     drawEdges();

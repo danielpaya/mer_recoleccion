@@ -460,6 +460,47 @@
   }
   document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => showView(b.dataset.view)));
 
+  /* ---------------- Pantalla completa ---------------- */
+  const fsTarget = $("#view-diagrama");
+  const fsBtn = $("#pantalla");
+  const fsLabel = fsBtn.querySelector("span");
+  const nativeEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+  const isFull = () => !!nativeEl() || fsTarget.classList.contains("is-max");
+  function syncFull() {
+    const on = isFull();
+    fsBtn.setAttribute("aria-pressed", String(on));
+    fsLabel.textContent = on ? "Salir" : "Pantalla completa";
+    fsBtn.title = on ? "Salir de pantalla completa (tecla F o Esc)" : "Pantalla completa (tecla F)";
+    document.body.classList.toggle("no-scroll", fsTarget.classList.contains("is-max"));
+    requestAnimationFrame(() => { drawEdges(); fit(); });
+  }
+  async function toggleFull() {
+    if (isFull()) {
+      if (fsTarget.classList.contains("is-max")) fsTarget.classList.remove("is-max");
+      else if (document.exitFullscreen) await document.exitFullscreen().catch(() => {});
+      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      syncFull();
+      return;
+    }
+    if (fsTarget.hidden) showView("diagrama");
+    try {
+      if (fsTarget.requestFullscreen) await fsTarget.requestFullscreen();
+      else if (fsTarget.webkitRequestFullscreen) fsTarget.webkitRequestFullscreen();
+      else throw new Error("sin API");
+    } catch (_) {
+      fsTarget.classList.add("is-max"); // respaldo: ocupa toda la ventana
+    }
+    syncFull();
+  }
+  fsBtn.addEventListener("click", toggleFull);
+  document.addEventListener("fullscreenchange", syncFull);
+  document.addEventListener("webkitfullscreenchange", syncFull);
+  document.addEventListener("keydown", (e) => {
+    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || "");
+    if (!typing && (e.key === "f" || e.key === "F") && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); toggleFull(); }
+    if (e.key === "Escape" && fsTarget.classList.contains("is-max")) { fsTarget.classList.remove("is-max"); syncFull(); }
+  });
+
   /* ---------------- Inicio ---------------- */
   placeCards();
   const start = () => {
